@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+cd `dirname $0`
+./background_image 'none'
+./background_color 17 17 17
+./clear_badge

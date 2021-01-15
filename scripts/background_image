@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set_background_image() {
+osascript << EOF
+  tell application "iTerm"
+    activate
+    set _current_session to current session of current window
+    tell _current_session
+      set background image to "$1"
+    end tell
+  end tell
+EOF
+}
+main() {
+  if [ "$1" = 'none' ];then
+    set_background_image ''
+    return
+  fi
+  # 画像を置いていそうな場所だけピックアップ。1階層しか見ないので追加してもそんな重くならないはず。
+  local ls_dirs=(
+    ~
+    ~/Downloads
+    ~/Desktop
+    ~/Documents
+  )
+  local image_path=`find ${ls_dirs[@]} -maxdepth 1 | grep -iP '(jpg|png|gif|jpeg)' | fzf`
+  [ -z "$image_path" ] && return
+  set_background_image $image_path
+}
+main $@
