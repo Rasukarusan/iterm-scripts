@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+main() {
+  local sizes=('small' 'large')
+  local size=$(echo ${sizes[@]} | tr ' ' '\n' | fzf)
+  case "$size" in
+    'small' )
+      ./column 120
+      ./row 40
+      ./transparency 0.3
+      ;;
+    'large' )
+      ./column 200
+      ./row 80
+      ./transparency 0.6
+      ;;
+    * )
+      ;;
+  esac
+}
+main

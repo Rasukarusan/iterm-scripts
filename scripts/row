@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+osascript << EOF
+tell application "iTerm"
+    activate
+    set _current_session to current session of current window
+    tell _current_session
+        set rows to ${1:-40}
+    end tell
+end tell
+EOF
