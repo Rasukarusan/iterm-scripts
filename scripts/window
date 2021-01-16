@@ -5,7 +5,7 @@ osascript << EOF
 use framework "Foundation"
 use framework "AppKit"
 use scripting additions
-set allFrames to (current application's NSScreen's screens()'s valueForKey:"frame") as list
+(current application's NSScreen's screens()'s valueForKey:"frame") as list
 EOF
 }
 
@@ -24,7 +24,6 @@ main() {
       startY=$(echo "$height * 0.2" | bc)
       endY=$(echo "$height - $startY * 1.5" | bc)
       ./bounds 'iTerm' $startX $startY $endX $endY
-      ./transparency 0.3
       ;;
     'medium' )
       IFS=',' read _ _ width height <<< "$(screen_bounds)"
@@ -33,15 +32,14 @@ main() {
       startY=$(echo "$height * 0.1" | bc)
       endY=$(echo "$height - $startY" | bc)
       ./bounds 'iTerm' $startX $startY $endX $endY
-      ./transparency 0.3
       ;;
     'large' )
       ./column 200
       ./row 80
-      ./transparency 0.6
       ;;
     * )
       ;;
   esac
+  ./transparency 0.6
 }
 main $@
