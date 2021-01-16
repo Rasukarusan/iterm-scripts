@@ -3,7 +3,7 @@ main() {
   cd `dirname $0`
 
   if [ -n "$1" ]; then
-    eval "./scripts/$1"
+    eval "./scripts/$1 ${@:2}"
     return
   fi
 

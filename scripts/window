@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+screen_bounds() {
+osascript << EOF
+use framework "Foundation"
+use framework "AppKit"
+use scripting additions
+set allFrames to (current application's NSScreen's screens()'s valueForKey:"frame") as list
+EOF
+}
+
+main() {
+  cd `dirname $0`
+  local size=$1
+  local sizes=('small' 'medium' 'large')
+  [ -z "$size" ] && size=$(echo ${sizes[@]} | tr ' ' '\n' | fzf)
+
+  local width height startX startY endX endY
+  case "$size" in
+    'small' )
+      IFS=',' read _ _ width height <<< "$(screen_bounds)"
+      startX=$(echo "$width * 0.25" | bc)
+      endX=$(echo "$width - $startX * 1.2" | bc)
+      startY=$(echo "$height * 0.2" | bc)
+      endY=$(echo "$height - $startY * 1.5" | bc)
+      ./bounds 'iTerm' $startX $startY $endX $endY
+      ./transparency 0.3
+      ;;
+    'medium' )
+      IFS=',' read _ _ width height <<< "$(screen_bounds)"
+      startX=$(echo "$width * 0.2" | bc)
+      endX=$(echo "$width - $startX" | bc)
+      startY=$(echo "$height * 0.1" | bc)
+      endY=$(echo "$height - $startY" | bc)
+      ./bounds 'iTerm' $startX $startY $endX $endY
+      ./transparency 0.3
+      ;;
+    'large' )
+      ./column 200
+      ./row 80
+      ./transparency 0.6
+      ;;
+    * )
+      ;;
+  esac
+}
+main $@

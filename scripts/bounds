@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+main() {
+local app=$1
+local startX=$2 startY=$3 endX=$4 endY=$5
+osascript << EOF
+tell application "$1"
+  set bounds of front window to {$startX, $startY, $endX, $endY}
+end tell
+EOF
+}
+main $@
+
+# screen_bounds() {
+# osascript << EOF
+# use framework "Foundation"
+# use framework "AppKit"
+# use scripting additions
+# set allFrames to (current application's NSScreen's screens()'s valueForKey:"frame") as list
+# EOF
+# }
+#
+# IFS=',' read _ _ width height <<< "$(screen_bounds)"
+# startX=$(echo "$width * 0.2" | bc)
+# endX=$(echo "$width - $startX * 2" | bc)
+# startY=$(echo "$height * 0.2" | bc)
+# endY=$(echo "$height - $startY * 1.5" | bc)
+# main 'iTerm' $startX $startY $endX $endY
