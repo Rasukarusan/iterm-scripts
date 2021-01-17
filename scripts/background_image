@@ -16,6 +16,12 @@ main() {
     set_background_image ''
     return
   fi
+
+  if [ -n "$1" ];then
+    set_background_image $1
+    return
+  fi
+
   # 画像を置いていそうな場所だけピックアップ。1階層しか見ないので追加してもそんな重くならないはず。
   local ls_dirs=(
     ~
