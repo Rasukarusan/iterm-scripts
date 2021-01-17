@@ -9,33 +9,44 @@ use scripting additions
 EOF
 }
 
+select_screen() {
+  screen_bounds | tr ',' '\n' | xargs -n 4 | fzf --prompt 'screen {x y width height}'
+}
+
+# 画面サイズを取得する際はメインウィンドウの左下がorigin、セットする際は左上がoriginとなる
 main() {
   cd `dirname $0`
   local size=$1
-  local sizes=('small' 'medium' 'large')
+  local sizes=('small' 'large')
   [ -z "$size" ] && size=$(echo ${sizes[@]} | tr ' ' '\n' | fzf)
 
   local width height startX startY endX endY
   case "$size" in
     'small' )
-      IFS=',' read _ _ width height <<< "$(screen_bounds)"
-      startX=$(echo "$width * 0.25" | bc)
-      endX=$(echo "$width - $startX * 1.2" | bc)
-      startY=$(echo "$height * 0.2" | bc)
-      endY=$(echo "$height - $startY * 1.5" | bc)
-      ./bounds 'iTerm' $startX $startY $endX $endY
-      ;;
-    'medium' )
-      IFS=',' read _ _ width height <<< "$(screen_bounds)"
-      startX=$(echo "$width * 0.2" | bc)
-      endX=$(echo "$width - $startX" | bc)
-      startY=$(echo "$height * 0.1" | bc)
-      endY=$(echo "$height - $startY" | bc)
+      read x y width height <<< "$(select_screen)"
+      startX=$(echo "$width * 0.3" + $x | bc)
+      endX=$(echo "$x * 2.5 + $width - $startX" | bc)
+      if [ $(echo "$y > 0" | bc) -eq 1 ]; then
+        startY=$(echo "$height * 0.2 - $height" | bc)
+        endY=$(echo "-1 * $height * 0.2" | bc)
+      else
+        startY=$(echo "$height * 0.2" | bc)
+        endY=$(echo "$height - $startY * 1.5" | bc)
+      fi
       ./bounds 'iTerm' $startX $startY $endX $endY
       ;;
     'large' )
-      ./column 200
-      ./row 80
+      read x y width height <<< "$(select_screen)"
+      startX=$(echo "$width * 0.25" + $x | bc)
+      endX=$(echo "$x * 2 + $width - $startX" | bc)
+      if [ $(echo "$y > 0" | bc) -eq 1 ]; then
+        startY=$(echo "$height * 0.1 - $height" | bc)
+        endY=$(echo "-1 * $height * 0.1" | bc)
+      else
+        startY=$(echo "$height * 0.1" | bc)
+        endY=$(echo "$height - $startY" | bc)
+      fi
+      ./bounds 'iTerm' $startX $startY $endX $endY
       ;;
     * )
       ;;
