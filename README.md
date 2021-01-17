@@ -37,9 +37,22 @@ sh iterm.sh
 Direct exec
 ```sh
 cd iterm-scripts
-# e.g. change transparency
+
+# background color
+sh iterm.sh background_color 0 23 119 # r g b
+
+# background image
+sh iterm.sh background_image ~/Downloads/dog.png
+
+# transparency
 sh iterm.sh transparency 0.8
 
-# e.g. change bounds
-sh iterm.sh window small
+# bounds
+sh iterm.sh window small # small / large
+
+# width
+sh iterm.sh column 120
+
+# height
+sh iterm.sh row 40
 ```
