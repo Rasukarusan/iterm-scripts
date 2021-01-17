@@ -24,6 +24,7 @@ main() {
   case "$size" in
     'small' )
       read x y width height <<< "$(select_screen)"
+      [ -z "$width" ] && return
       startX=$(echo "$width * 0.3" + $x | bc)
       endX=$(echo "$x * 2.5 + $width - $startX" | bc)
       if [ $(echo "$y > 0" | bc) -eq 1 ]; then
@@ -37,6 +38,7 @@ main() {
       ;;
     'large' )
       read x y width height <<< "$(select_screen)"
+      [ -z "$width" ] && return
       startX=$(echo "$width * 0.25" + $x | bc)
       endX=$(echo "$x * 2 + $width - $startX" | bc)
       if [ $(echo "$y > 0" | bc) -eq 1 ]; then
