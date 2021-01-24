@@ -10,7 +10,7 @@ EOF
 }
 
 select_screen() {
-  screen_bounds | tr ',' '\n' | xargs -n 4 | fzf --prompt 'screen {x y width height}'
+  screen_bounds | tr ',' '\n' | xargs -n 4 | fzf --select-1 --prompt 'screen {x y width height}'
 }
 
 # 画面サイズを取得する際はメインウィンドウの左下がorigin、セットする際は左上がoriginとなる
