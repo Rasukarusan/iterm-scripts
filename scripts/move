@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+get_bounds() {
+  osascript << EOF
+    tell application "iTerm"
+      (bounds of front window) as list
+    end tell
+EOF
+}
+
+set_bounds() {
+local startX=$1 startY=$2 endX=$3 endY=$4
+osascript << EOF
+tell application "iTerm"
+  set bounds of front window to {$startX, $startY, $endX, $endY}
+end tell
+EOF
+}
+
+getchar() {
+    dd bs=1 count=1  2>/dev/null 
+}
+
+init_tty() {
+    exec < /dev/tty
+    stty -icanon min 1 -echo -ixon -icrnl 
+}
+
+quit_tty() {
+    stty icanon echo eof '^d' ixon icrnl
+}
+
+main() {
+  local vector=20
+  local startX startY endX endY
+  IFS=',' read startX startY endX endY <<< "$(get_bounds)"
+  init_tty
+
+  while true ; do
+      case "$(getchar)" in
+          'h')
+            startX=$((startX-=vector))
+            endX=$((endX-=vector))
+            set_bounds $startX $startY $endX $endY
+              ;;
+          'j')
+            startY=$((startY+=vector))
+            endY=$((endY+=vector))
+            set_bounds $startX $startY $endX $endY
+              ;;
+          'k')
+            startY=$((startY-=vector))
+            endY=$((endY-=vector))
+            set_bounds $startX $startY $endX $endY
+              ;;
+          'l')
+            startX=$((startX+=vector))
+            endX=$((endX+=vector))
+            set_bounds $startX $startY $endX $endY
+              ;;
+          $'\x0d' | $'\x1b' ) # ENTER
+              break
+              ;;
+          *)
+            echo 'none'
+      esac
+  done
+  quit_tty
+}
+
+main
