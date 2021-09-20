@@ -53,6 +53,6 @@ main() {
     * )
       ;;
   esac
-  ./transparency 0.6
+  ./transparency 0.4
 }
 main $@
